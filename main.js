@@ -1,3 +1,13 @@
+const currentScript = document.currentScript;
+
+const scriptSrc = currentScript.src;
+
+const url = scriptSrc.replace(/\/[^/]*$/, '');
+
+const $ = jQuery;
+
+loadScripts();
+
 document.addEventListener('DOMContentLoaded',function () {
 
     const API = 'http://192.168.18.119/'
@@ -6,7 +16,7 @@ document.addEventListener('DOMContentLoaded',function () {
 
     let ledStatus;
 
-    fetch(API + 'ledoff').then(response => {console.log(response)})
+    fetch(API + 'ledstatus').then(response => {console.log(response)})
 
     document.addEventListener('click', (e) => {
         if (e.target.matches('#toggle-button')){
@@ -14,6 +24,16 @@ document.addEventListener('DOMContentLoaded',function () {
         }
     });
 
-
-
 });
+
+
+function getContent(file){
+    // ajax.get('/contents/' + file + '.html');
+}
+
+function loadScripts(){
+    $.ajax({
+        url: url + '/test.js'
+    })
+
+}
