@@ -1,1 +1,1 @@
-alert('hi');
+document.write(777777777);
