@@ -1,1 +1,1 @@
-document.write(777777777);
+document.write("hello world");
