@@ -1,17 +1,52 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-module.exports = (env, argv) => {
-    const isProduction = argv.mode === 'production';
+const fs = require('fs');
 
-    const plugins = [
-        new CleanWebpackPlugin(),
-    ];
+const jsFiles = () => fs.readdirSync(path.resolve(__dirname, 'resources/js'))
+    .filter(file => file.endsWith('.js'))
+    .reduce((acc, file) => {
+        const entryName = path.basename(file, '.js');
+        acc[entryName] = path.resolve(__dirname, `resources/js/${file}`);
+        return acc;
+    }, {});
 
-    if (isProduction) {
-        plugins.push(
+
+module.exports = (env) => {
+
+    const isProd = env === 'production';
+
+    const config = {
+        mode: 'production',
+        entry: {
+            ...jsFiles()
+        },
+        output: {
+            filename: '[name].js',
+            path: path.resolve(__dirname, '/js'),
+        },
+        optimization: {
+            minimize: true,
+            minimizer: [
+                new TerserPlugin({
+                    terserOptions: {
+                        format: {
+                            comments: false,
+                        },
+                        compress: {
+                            drop_console: isProd,
+                        },
+                        mangle: isProd,
+                    },
+                    extractComments: false,
+                }),
+            ],
+            splitChunks: {
+                chunks: 'async',
+            },
+        },
+        plugins: [
             new CompressionPlugin({
                 filename: '[path][base].gz',
                 algorithm: 'gzip',
@@ -19,38 +54,12 @@ module.exports = (env, argv) => {
                 threshold: 10240,
                 minRatio: 0.8,
             })
-        );
+        ],
+    };
+
+    if (!isProd){
+        config.devtool = 'source-map';
     }
 
-    const optimizationConfig = {
-        minimize: true,
-        minimizer: [
-            new TerserPlugin({
-                terserOptions: {
-                    format: {
-                        comments: false,
-                    },
-                    compress: {
-                        drop_console: isProduction,
-                    },
-                    mangle: isProduction,
-                },
-                extractComments: false,
-            }),
-        ],
-        splitChunks: {
-            chunks: 'async',
-        },
-    };
-
-    return {
-        mode: 'production',
-        entry: './src/index.js',
-        output: {
-            filename: 'app.js',
-            path: path.resolve(__dirname, 'public'),
-        },
-        optimization: optimizationConfig,
-        plugins,
-    };
+    return config;
 };

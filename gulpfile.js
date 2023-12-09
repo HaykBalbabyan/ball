@@ -3,22 +3,24 @@ const sass = require('gulp-sass')(require('node-sass'));
 const autoprefixer = require('gulp-autoprefixer');
 const cssnano = require('gulp-cssnano');
 const replace = require('gulp-replace');
-const terserOptions = require('./terser-options');
-const uglify = require('gulp-uglify');
-const terser = require('gulp-terser');
 const htmlmin = require('gulp-htmlmin');
 const htmlclean = require('gulp-htmlclean');
 const cleanCSS = require('gulp-clean-css');
 const fileInclude = require('gulp-file-include');
 const del = require('del');
+const terser = require('gulp-terser');
+
+const webpack = require('webpack-stream');
 
 function clean() {
-    return del(['public/**/*','esp/**/*']);
+    return del(['public/**/*']);
 }
+
+let env = 'production';
 
 function html() {
     return gulp
-        .src(['resources/**/*.html','!resources/esp/**/*.*'])
+        .src(['resources/html/*.html'])
         .pipe(fileInclude({
             prefix: '{{',
             suffix: '}}',
@@ -36,7 +38,7 @@ function html() {
 
 function css() {
     return gulp
-        .src(['resources/**/*.css','!resources/esp/**/*.*'])
+        .src(['resources/scss/*.css'])
         .pipe(cleanCSS())
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer())
@@ -47,56 +49,60 @@ function css() {
 }
 
 function js() {
-    return gulp
-        .src(['resources/**/*.js','!resources/esp/**/*.*'])
-        .pipe(uglify())
-        .pipe(terser(terserOptions))
-        .pipe(gulp.dest('public/'));
-}
+    let g = gulp
+        .src(['resources/js/*.js','!resources/js/*.js.map'])
+        .pipe(webpack(require('./webpack.config.js')(env), require('webpack')));
 
-function rest() {
-    return gulp
-        .src(['resources/**/*', '!resources/**/*.html', '!resources/**/*.css', '!resources/**/*.js','!resources/esp/**/*.*'])
-        .pipe(gulp.dest('public/'));
-}
+    if(env === 'production'){
+        g = g.pipe(terser(require('./terser-options')))
+    }
 
-function esp() {
-    return gulp
-        .src('resources/esp/**/*.html')
-        .pipe(fileInclude({
-            prefix: '{{',
-            suffix: '}}',
-            basepath: '@file'
-        }))
-        .pipe(htmlclean())
-        .pipe(htmlmin({
-            collapseWhitespace: true,
-            removeComments: true,
-            minifyJS: true,
-            minifyCSS: true,
-        }))
-        .pipe(replace('"','\\"'))
-        .pipe(gulp.dest('public/esp/'));
+    g = g.pipe(gulp.dest('public/js'));
+
+    return g;
 }
 
 function watch() {
     gulp.watch('resources/**/*.html', html);
     gulp.watch('resources/**/*.css', css);
     gulp.watch('resources/**/*.js', js);
-    gulp.watch('resources/esp/**/*.js', esp);
-    gulp.watch(['resources/**/*', '!resources/**/*.html', '!resources/**/*.css', '!resources/**/*.js'], rest);
+    gulp.watch('dynamic-js/**/*.js', js);
 }
 
-const build = gulp.series(clean, gulp.parallel(esp, html, css, js, rest));
+function __default(done){
+    env = 'development';
+    done();
+}
+
+function __build(done){
+    env = 'production';
+    done();
+}
 
 // Exports
 exports.html = html;
 exports.css = css;
 exports.js = js;
-exports.rest = rest;
 exports.watch = watch;
-exports.esp = esp;
 exports.clean = clean;
 
-exports.default = gulp.series(gulp.parallel(esp, html, css, js, rest), watch);
-exports.build = build;
+exports.default = gulp.series(
+    __default,
+    clean,
+    gulp.parallel(
+        html,
+        css,
+        js
+    ),
+    watch
+);
+
+exports.build = gulp.series(
+    __build,
+    clean,
+    gulp.parallel(
+        html,
+        css,
+        js
+    )
+);

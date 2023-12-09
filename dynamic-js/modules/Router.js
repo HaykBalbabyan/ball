@@ -1,42 +1,58 @@
-import {routes} from "../../routes";
-import {getCookie, loadContent, setCookie} from "../Dynamic";
+import {getCookie, loadContent, setCookie, ajax} from "../Dynamic";
 import {config} from '../../dynamic.config';
+import routes from '../../routes';
 
-export default class Routing {
+export default class Router {
 
     #history = {};
+    #currentRoute = null;
+
     referer = {};
 
     constructor(){
-
-        const historyJson = getCookie('history');
-
-        if (!historyJson){
-            setCookie('history','{}',365);
-            this.#history = {};
-        } else{
-            try {
-                this.#history = JSON.parse(historyJson);
-            }catch (e){
-                setCookie('history','{}',365);
-                this.#history = {};
-            }
-        }
+        // const historyJson = getCookie('history');
+        //
+        // if (!historyJson){
+        //     setCookie('history','{}',365);
+        //     this.#history = {};
+        // } else{
+        //     try {
+        //         this.#history = JSON.parse(historyJson);
+        //     }catch (e){
+        //         setCookie('history','{}',365);
+        //         this.#history = {};
+        //     }
+        // }
 
         this.referer = null;
 
         this.update();
 
-        this.#popstate();
+        this.#events();
     }
 
-    #popstate(){
+    #events(){
         window.addEventListener('popstate', (event) => {
             this.update();
 
             this.#generateReferer();
 
-            this.onChange(event.state,this.referer);
+            if (typeof this.onChange === 'function') {
+                this.onChange(event.state, this.referer);
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            const target = event.target;
+            if (target.matches('a.router') || target.closest('a.router')){
+                const a = target.matches('a.router') ? target : target.closest('a.router');
+
+                if ( !a.href ) return;
+
+                event.preventDefault();
+
+                this.go(a.href);
+            }
         });
     }
 
@@ -58,39 +74,50 @@ export default class Routing {
         }
     }
 
-    #getRouteName(url = null){
+    #getRoute(url = null,returnRoute = false){
 
-        const path = url ? url : window.location.pathname;
+        const path = url ? url : window.location.href;
 
         if (url && typeof routes[url] === 'object'){
-            return url;
+            return returnRoute ? routes[url] : url;
         }
 
         for (const name in routes){
             const route = routes[name];
-            if (route.path === path){
-                return name;
+            const parsedUrl = this.#parseUrl(window.location.origin + route.path,path);
+            if (parsedUrl.match){
+                routes[name].variables = parsedUrl.variables;
+                return returnRoute ? routes[name] : name ;
             }
+        }
+
+        if (typeof routes['not-found'] === 'object'){
+            return returnRoute ? routes['not-found'] : 'not-found';
         }
 
         return null;
     }
 
+    getCurrent(){
+        return this.#currentRoute;
+    }
+    
     update(){
-        const routeName = this.#getRouteName();
+        const routeName = this.#getRoute();
 
         if (routeName){
             const route = routes[routeName];
 
-            console.log(route);
+            this.#currentRoute = route;
 
             loadContent(config.templates.urlpath + route.template);
+
+            document.title = routeName ? route.title : '';
         }
     }
 
     go(url,force = false){
-
-        const routeName = this.#getRouteName(url);
+        const routeName = this.#getRoute(url);
 
         if (routeName || !routeName && force) {
 
@@ -100,7 +127,7 @@ export default class Routing {
                 id : lastId + 1,
             };
 
-            const route = routes[routeName] || [];
+            const route = routes[routeName] || {};
 
             if (routeName){
                 data.page = route.name;
@@ -120,20 +147,22 @@ export default class Routing {
 
             this.#generateReferer();
 
-            window.history.pushState(data,data.page,routeName ? route.path : url);
+            window.history.pushState(data,routeName ? route.title : data.name,url);
 
             this.#pushHistory(data);
 
             this.update();
 
-            this.onChange(data,this.referer);
+            if (typeof this.onChange === 'function') {
+                this.onChange(data,this.referer);
+            }
         }
     }
 
     getHistoryLastId(){
         const ids = Object.keys(this.#history);
 
-        return  ids.length ? ids[id.length - 1] : 0;
+        return ids.length ? +ids[ids.length - 1] : 0;
     }
 
     #pushHistory(data){
@@ -145,7 +174,7 @@ export default class Routing {
 
         this.#history = history;
 
-        setCookie('history',JSON.stringify(history),365);
+        // setCookie('history',JSON.stringify(history),1 / 24);
     }
 
     onChange = (data,referer) => {};
@@ -159,5 +188,35 @@ export default class Routing {
             '(\\#[-a-zA-Z\\d_]*)?$', 'i');
 
         return urlPattern.test(str);
+    }
+
+    #parseUrl(template, url) {
+        const regexPattern = template.replace(/\{[^\}]+\}/g, '([^\/]+)');
+
+        const regex = new RegExp(`^${regexPattern}$`);
+
+        const match = url.match(regex);
+
+        if (match) {
+            const parts = template.match(/\{[^\}]+\}/g);
+            const values = {};
+
+            if (parts) {
+                parts.forEach((part, index) => {
+                    const key = part.replace(/[{}]/g, '');
+                    values[key] = match[index + 1];
+                });
+            }
+
+            return {
+                variables: values,
+                match: true,
+            };
+        } else {
+            return {
+                variables: {},
+                match: false,
+            };
+        }
     }
 }

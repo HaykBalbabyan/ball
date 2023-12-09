@@ -1,0 +1,1 @@
+import {DynamicJS} from "../../dynamic-js/Dynamic";

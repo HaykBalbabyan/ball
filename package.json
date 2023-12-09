@@ -3,6 +3,7 @@
 	"author": "Hayk Balbabyan",
 	"version": "0.0.1",
 	"devDependencies": {
+		"compression-webpack-plugin": "^10.0.0",
 		"del": "^3.0.0",
 		"gulp": "^4.0.2",
 		"gulp-autoprefixer": "^8.0.0",
@@ -15,7 +16,12 @@
 		"gulp-replace": "^1.1.4",
 		"gulp-sass": "^5.1.0",
 		"gulp-terser": "^2.1.0",
+		"gulp-through2": "^1.0.1",
 		"gulp-uglify": "^3.0.2",
-		"node-sass": "^9.0.0"
+		"node-sass": "^9.0.0",
+		"terser-webpack-plugin": "^5.3.9",
+		"webpack": "^5.89.0",
+		"webpack-stream": "^7.0.0",
+        "through2": "^4.0.2"
 	}
 }
