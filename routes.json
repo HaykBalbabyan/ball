@@ -1,0 +1,14 @@
+const routes = {
+    home: {
+        name: 'Home',
+        path: '/',
+        template: '/home.html',
+        title: 'Home - Test',
+    },
+    test : {
+        name: 'Test',
+        path: '/aa/test/',
+        template: '/test.html',
+        title: 'Test - Test',
+    },
+};

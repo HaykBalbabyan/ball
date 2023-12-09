@@ -1,1 +1,0 @@
-loadContent('controller')
