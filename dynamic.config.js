@@ -1,7 +1,5 @@
 export const config = {
     templates: {
-        basedir : './public/html',
-        urlpath : '/public'
+        urlpath : 'https://haykbalbabyan.github.io/ball/public'
     },
-    routesUrl : '/routes.json'
 };
