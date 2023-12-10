@@ -1,13 +1,13 @@
 {
   "controller": {
     "name": "Dashboard",
-    "path": "/controller",
+    "path": "/ball/controller",
     "template": "/controller.html",
     "title": "Controller"
   },
   "dashboard": {
     "name": "Dashboard",
-    "path": "/",
+    "path": "/ball/",
     "template": "/dashboard.html",
     "title": "Dashboard"
   },
