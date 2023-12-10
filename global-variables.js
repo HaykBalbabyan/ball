@@ -1,3 +1,3 @@
 module.exports = {
-    site: 'https://haykbalbabyan.github.io/'
+    site: 'https://haykbalbabyan.github.io/ball/'
 };
