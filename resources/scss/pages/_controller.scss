@@ -1,0 +1,58 @@
+.controller-wrapper{
+  padding: 20px 50px;
+  .inline{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .side{
+    width: 50%;
+  }
+  .left-side{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    .bar{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-90deg);
+    }
+    input[type=range]{
+      width: 100%;
+    }
+  }
+  .right-side{
+    justify-content: flex-end;
+    display: flex;
+  }
+  .buttons{
+    display: flex;
+    gap:16px;
+    &.column{
+      flex-direction: column;
+      button{
+        width: auto;
+        height: 90px;
+        aspect-ratio:2;
+      }
+    }
+    &.row{
+      flex-direction: row;
+      button{
+        width: 90px;
+        height: auto;
+        aspect-ratio:0.5;
+      }
+    }
+  }
+
+  .controll-button{
+    border: 1px solid #0d0c14;
+    background: #eff3f8;
+    border-radius: 20px;
+    &:active{
+      background: #e7ebf0;
+    }
+  }
+}

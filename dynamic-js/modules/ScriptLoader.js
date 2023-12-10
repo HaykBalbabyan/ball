@@ -30,13 +30,11 @@ export default class ScriptLoader{
     }
 
     async #loadFile(src){
-        let js = '';
 
         ajax({
             url: src,
             success(content) {
                 eval(content);
-
             }
         });
     }

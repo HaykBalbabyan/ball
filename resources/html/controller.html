@@ -1,0 +1,29 @@
+<style src="__compiler__site__/public/css/controller.css"></style>
+
+{{include('parts/header.html',{page:'Controller'})}}
+
+<section class="controller-wrapper">
+    <div class="inline">
+        <div class="left-side side">
+            <div class="buttons column">
+                <button class="forward controll-button">
+                    <icon name="arrow-up" type="regular" width="35" height="35"></icon>
+                </button>
+                <button class="backward controll-button">
+                    <icon name="arrow-down" type="regular" width="35" height="35"></icon>
+                </button>
+            </div>
+        </div>
+        <div class="right-side side">
+            <div class="buttons row">
+                <button class="left controll-button">
+                    <icon name="arrow-left" type="regular" width="35" height="35"></icon>
+                </button>
+                <button class="right controll-button">
+                    <icon name="arrow-right" type="regular" width="35" height="35"></icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <input type="range" class="speed" value="10" min="0" max="20" step="0.5">
+</section>

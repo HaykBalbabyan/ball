@@ -1,14 +1,19 @@
 {
-  "home": {
-    "name": "Home",
-    "path": "/",
-    "template": "/home.html",
-    "title": "Home - Test"
+  "controller": {
+    "name": "Dashboard",
+    "path": "/controller",
+    "template": "/controller.html",
+    "title": "Controller"
   },
-  "test": {
-    "name": "Test",
-    "path": "/aa/test/{slug}",
-    "template": "/test.html",
-    "title": "Test - Test"
+  "dashboard": {
+    "name": "Dashboard",
+    "path": "/",
+    "template": "/dashboard.html",
+    "title": "Dashboard"
+  },
+  "not-found": {
+    "name": "Not found",
+    "template": "/not-found.html",
+    "title": "404 Not found"
   }
 }

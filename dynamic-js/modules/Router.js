@@ -9,13 +9,18 @@ export default class Router {
 
     referer = {};
 
+    events = {
+        onLoad:(route)=>{},
+        onChange: (route,referer) => {},
+    };
+
     constructor(){
         // const historyJson = getCookie('history');
         //
         // if (!historyJson){
         //     setCookie('history','{}',365);
         //     this.#history = {};
-        // } else{
+        // } else {
         //     try {
         //         this.#history = JSON.parse(historyJson);
         //     }catch (e){
@@ -24,11 +29,17 @@ export default class Router {
         //     }
         // }
 
+        this.#init();
+    }
+
+    async #init(){
         this.referer = null;
 
-        this.update();
+        await this.update();
 
         this.#events();
+
+        this.events.onLoad(this.#currentRoute);
     }
 
     #events(){
@@ -37,15 +48,17 @@ export default class Router {
 
             this.#generateReferer();
 
-            if (typeof this.onChange === 'function') {
-                this.onChange(event.state, this.referer);
-            }
+            setTimeout(()=>{
+                if (typeof this.events.onChange === 'function') {
+                    this.events.onChange(event.state, this.referer);
+                }
+            },1)
         });
 
         document.addEventListener('click', (event) => {
             const target = event.target;
-            if (target.matches('a.router') || target.closest('a.router')){
-                const a = target.matches('a.router') ? target : target.closest('a.router');
+            if (target.matches('a[router]') || target.closest('a[router]')){
+                const a = target.matches('a[router]') ? target : target.closest('a[router]');
 
                 if ( !a.href ) return;
 
@@ -84,7 +97,7 @@ export default class Router {
 
         for (const name in routes){
             const route = routes[name];
-            const parsedUrl = this.#parseUrl(window.location.origin + route.path,path);
+            const parsedUrl = this.parseUrl(window.location.origin + route.path,path);
             if (parsedUrl.match){
                 routes[name].variables = parsedUrl.variables;
                 return returnRoute ? routes[name] : name ;
@@ -102,7 +115,7 @@ export default class Router {
         return this.#currentRoute;
     }
     
-    update(){
+    async update(){
         const routeName = this.#getRoute();
 
         if (routeName){
@@ -110,13 +123,17 @@ export default class Router {
 
             this.#currentRoute = route;
 
-            loadContent(config.templates.urlpath + route.template);
+            await loadContent(config.templates.urlpath + route.template);
 
             document.title = routeName ? route.title : '';
         }
     }
 
     go(url,force = false){
+        if (window.location.href === url && !force){
+            return;
+        }
+
         const routeName = this.#getRoute(url);
 
         if (routeName || !routeName && force) {
@@ -153,9 +170,11 @@ export default class Router {
 
             this.update();
 
-            if (typeof this.onChange === 'function') {
-                this.onChange(data,this.referer);
-            }
+            setTimeout(()=>{
+                if (typeof this.events.onChange === 'function') {
+                    this.events.onChange(data,this.referer);
+                }
+            },1)
         }
     }
 
@@ -177,8 +196,6 @@ export default class Router {
         // setCookie('history',JSON.stringify(history),1 / 24);
     }
 
-    onChange = (data,referer) => {};
-
     isURL(str) {
         const urlPattern = new RegExp('^(https?:\\/\\/)?' +
             '((([a-zA-Z\\d]([a-zA-Z\\d-]{0,61}[a-zA-Z\\d])?)\\.)+[a-zA-Z]{2,6}|' +
@@ -190,7 +207,7 @@ export default class Router {
         return urlPattern.test(str);
     }
 
-    #parseUrl(template, url) {
+    parseUrl(template, url) {
         const regexPattern = template.replace(/\{[^\}]+\}/g, '([^\/]+)');
 
         const regex = new RegExp(`^${regexPattern}$`);
