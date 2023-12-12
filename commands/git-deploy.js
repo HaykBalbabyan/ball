@@ -16,6 +16,7 @@ async function deploy() {
         await command('git add .');
         await command('git status');
         await command(`git commit -m "${message}"`);
+        await command(`git push`);
     } catch (error) {
         console.error('Error occurred:', error);
     }
