@@ -21,6 +21,8 @@ async function deploy() {
         await command('git status');
         await command(`git commit -m "${message}"`);
         await command(`git push`);
+
+        console.log('PROJECT SUCCESSFULLY PUSHED!')
     } catch (error) {
         console.error('Error occurred:', error);
     }
