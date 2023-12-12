@@ -1,11 +1,12 @@
 {
   "name": "ball-ui",
   "author": "Hayk Balbabyan",
-  "version": "0.0.5",
+  "version": "0.0.3",
   "scripts": {
     "deploy": "echo \"\r\rInstall...\r\r\" && npm i && echo \"\r\rBuild...\r\r\"  && gulp build && echo \"\r\rUpload...\r\r\" && node ./commands/upload -- --t",
     "upload": "node ./commands/upload -- --t",
-    "push": "node ./commands/git-deploy -- -m"
+    "push": "node ./commands/git-deploy -- -m",
+    "push:v": "node ./commands/git-deploy -- --change-version -m"
   },
   "devDependencies": {
     "compression-webpack-plugin": "*",

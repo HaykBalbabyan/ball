@@ -4,6 +4,7 @@ const fs = require('fs');
 const tIndex = process.argv.indexOf('-m');
 
 let message = '';
+const changeVersion = process.argv.indexOf('--change-version') >= 0;
 if (tIndex !== -1 && tIndex + 1 < process.argv.length && typeof process.argv[tIndex + 1] !== 'undefined' && process.argv[tIndex + 1]) {
     message = process.argv[tIndex + 1];
 }
@@ -15,7 +16,9 @@ async function deploy() {
         await command('npm install');
         await command('gulp build');
 
-        await incrementVersion();
+        if (changeVersion) {
+            await incrementVersion();
+        }
 
         await command('git add .');
         await command('git status');
