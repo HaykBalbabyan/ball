@@ -1,30 +1,30 @@
 {
-	"name": "ball-ui",
-	"author": "Hayk Balbabyan",
-	"version": "0.0.3",
+  "name": "ball-ui",
+  "author": "Hayk Balbabyan",
+  "version": "0.0.4",
   "scripts": {
-    "deploy" : "echo \"\r\rInstall...\r\r\" && npm i && echo \"\r\rBuild...\r\r\"  && gulp build && echo \"\r\rUpload...\r\r\" && node ./commands/upload -- --t",
-    "upload" : "node ./commands/upload -- --t",
-    "push" : "node ./commands/git-deploy -- -m"
+    "deploy": "echo \"\r\rInstall...\r\r\" && npm i && echo \"\r\rBuild...\r\r\"  && gulp build && echo \"\r\rUpload...\r\r\" && node ./commands/upload -- --t",
+    "upload": "node ./commands/upload -- --t",
+    "push": "node ./commands/git-deploy -- -m"
   },
   "devDependencies": {
-		"compression-webpack-plugin": "*",
-		"del": "*",
-		"gulp": "*",
-		"gulp-autoprefixer": "*",
-		"gulp-clean-css": "*",
-		"gulp-cssnano": "*",
-		"gulp-file-include": "*",
-		"gulp-htmlclean": "*",
-		"gulp-htmlmin": "*",
-		"gulp-replace": "*",
-		"gulp-sass": "*",
-		"gulp-terser": "*",
-		"node-sass": "*",
-		"terser-webpack-plugin": "*",
-		"webpack": "*",
-		"webpack-stream": "*",
-        "basic-ftp": "*",
-        "recursive-readdir": "*"
-	}
+    "compression-webpack-plugin": "*",
+    "del": "*",
+    "gulp": "*",
+    "gulp-autoprefixer": "*",
+    "gulp-clean-css": "*",
+    "gulp-cssnano": "*",
+    "gulp-file-include": "*",
+    "gulp-htmlclean": "*",
+    "gulp-htmlmin": "*",
+    "gulp-replace": "*",
+    "gulp-sass": "*",
+    "gulp-terser": "*",
+    "node-sass": "*",
+    "terser-webpack-plugin": "*",
+    "webpack": "*",
+    "webpack-stream": "*",
+    "basic-ftp": "*",
+    "recursive-readdir": "*"
+  }
 }
