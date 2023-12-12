@@ -2,7 +2,12 @@
 	"name": "ball-ui",
 	"author": "Hayk Balbabyan",
 	"version": "0.0.3",
-	"devDependencies": {
+  "scripts": {
+    "deploy" : "echo \"\r\rInstall...\r\r\" && npm i && echo \"\r\rBuild...\r\r\"  && gulp build && echo \"\r\rUpload...\r\r\" && node ./commands/upload -- --t",
+    "upload" : "node ./commands/upload -- --t",
+    "push" : "git commit -a -m -- && git push"
+  },
+  "devDependencies": {
 		"compression-webpack-plugin": "*",
 		"del": "*",
 		"gulp": "*",
@@ -18,6 +23,8 @@
 		"node-sass": "*",
 		"terser-webpack-plugin": "*",
 		"webpack": "*",
-		"webpack-stream": "*"
+		"webpack-stream": "*",
+        "basic-ftp": "*",
+        "recursive-readdir": "*"
 	}
 }
