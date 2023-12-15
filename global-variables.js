@@ -1,5 +1,6 @@
 module.exports = {
-    site: 'http://ball.loc'
+    site: 'http://ball.loc',
+    files: 'http://ball.infinitycloud.ru'
 };
 
 

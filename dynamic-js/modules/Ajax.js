@@ -13,13 +13,14 @@ export default class Ajax{
             }),
             beforeSend: props.beforeSend ?? (() => {
             }),
-            contentType: props.contentType ?? 'application/x-www-form-urlencoded'
+            contentType: props.contentType ?? ''
         };
 
         this.#sendData = '';
 
         if (this.#props.data) {
             this.#sendData = this.#objToUrl(this.#props.data);
+            this.#props.contentType = this.#props.contentType ? this.#props.contentType : 'application/x-www-form-urlencoded'
         }
     }
 
@@ -57,11 +58,13 @@ export default class Ajax{
 
         const xhr = new XMLHttpRequest();
 
-        this.#props.url += this.#props.method === 'POST' ? '' : ('?' + this.#sendData);
+        this.#props.url += this.#props.method === 'POST' || !this.#sendData ? '' : ('?' + this.#sendData);
 
-        xhr.open(this.#props.method, this.#props.url, true);
+        xhr.open(this.#props.method, this.#props.url, true,'','');
 
-        xhr.setRequestHeader("Content-Type", this.#props.contentType);
+        if (this.#props.contentType) {
+            xhr.setRequestHeader("Content-Type", this.#props.contentType);
+        }
 
         xhr.send(this.#sendData);
 
