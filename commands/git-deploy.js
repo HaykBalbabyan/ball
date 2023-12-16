@@ -14,11 +14,12 @@ deploy();
 async function deploy() {
     try {
         await command('npm install');
-        await command('gulp build');
 
         if (changeVersion) {
             await incrementVersion();
         }
+
+        await command('gulp build');
 
         await command('git add .');
         await command('git status');
