@@ -13,8 +13,6 @@ deploy();
 
 async function deploy() {
     try {
-        await command('npm install');
-
         if (changeVersion) {
             await incrementVersion();
         }
