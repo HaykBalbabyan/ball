@@ -2,8 +2,8 @@
 #include <ESP8266WebServer.h>
 #include <ArduinoJson.h>
 
-const char* ssid = ""; // WIFI name
-const char* password = ""; //WIFI password
+const char* ssid = "Hayko"; // WIFI name
+const char* password = "00001111"; // WIFI password
 
 ESP8266WebServer server(80);
 
@@ -16,50 +16,83 @@ bool LEDstatus = LOW;
 
 String direction = "";
 
+unsigned long lastConnectionAttempt = 0;
+const unsigned long connectionInterval = 500; // Change to 5000 milliseconds (5 seconds)
+
+bool canPrintConnecting = true;
+
 void setup() {
   Serial.begin(9600);
   delay(100);
   pinMode(D4, OUTPUT);
-  pinMode(d5,OUTPUT);
-  pinMode(d6,OUTPUT);
-  pinMode(d7,OUTPUT);
-  pinMode(d8,OUTPUT);
+  pinMode(d5, OUTPUT);
+  pinMode(d6, OUTPUT);
+  pinMode(d7, OUTPUT);
+  pinMode(d8, OUTPUT);
 
-  Serial.println("Connecting to ");
-  Serial.println(ssid);
-
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(300);
-    digitalWrite(D4, !LEDstatus);
-    Serial.print(".");
-
-    LEDstatus = !LEDstatus;
-  }
-  Serial.println("");
-  Serial.println("WiFi connected..!");
-  Serial.print("Got IP: ");
-  Serial.println(WiFi.localIP());
-  digitalWrite(D4, !LOW);
-
-  routes();
-
-  server.begin();
-  Serial.println("HTTP Server Started");
-
-  delay(1200);
-
-  LEDstatus = HIGH;
-  digitalWrite(D4, !LOW);
-  delay(500);
-  digitalWrite(D4, !LEDstatus);
+  connectToWiFi();
 }
 
 void loop() {
   server.handleClient();
 
   move();
+
+  checkAndReconnectWiFi(); // Check and reconnect WiFi asynchronously
+}
+
+void connectToWiFi() {
+  if (canPrintConnecting){
+    Serial.println("Connecting to ");
+    Serial.println(ssid);
+    canPrintConnecting = false;
+    direction = "";
+  }
+  digitalWrite(D4, !LEDstatus); // Turn on the LED initially
+  WiFi.begin(ssid, password);
+  lastConnectionAttempt = millis(); // Record the time of this connection a
+
+  while (!isConnected() && millis() - lastConnectionAttempt < connectionInterval) {
+    Serial.print(".");
+    digitalWrite(D4, !LEDstatus);
+    delay(300);
+
+    LEDstatus = !LEDstatus;
+  }
+
+  digitalWrite(D4, LOW); // Turn off the LED
+
+  if (isConnected()) {
+    routes();
+
+    Serial.println("");
+    Serial.println("WiFi connected..!");
+    Serial.print("Got IP: ");
+    Serial.println(WiFi.localIP());
+
+    routes();
+    server.begin();
+    Serial.println("HTTP Server Started");
+
+    delay(500);
+
+    LEDstatus = HIGH;
+    digitalWrite(D4, !LOW);
+    delay(300);
+    digitalWrite(D4, !LEDstatus);
+
+    server.begin();
+  }
+}
+
+bool isConnected() {
+  return WiFi.status() == WL_CONNECTED;
+}
+
+void checkAndReconnectWiFi() {
+  if (!isConnected() && millis() - lastConnectionAttempt >= connectionInterval) {
+    connectToWiFi();
+  }
 }
 
 String sendJson(DynamicJsonDocument& data) {
