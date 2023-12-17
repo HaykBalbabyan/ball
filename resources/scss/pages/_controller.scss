@@ -1,5 +1,11 @@
+body{
+  touch-action: manipulation; /* Improve touch responsiveness */
+  zoom: reset;
+}
+
 .controller-wrapper{
   padding: 20px 50px;
+  user-select: none;
   .inline{
     display: flex;
     justify-content: space-between;
@@ -26,6 +32,13 @@
     justify-content: flex-end;
     display: flex;
   }
+
+  .center{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
   .buttons{
     display: flex;
     gap:16px;
@@ -47,10 +60,11 @@
     }
   }
 
-  .controll-button{
+  .control-button{
     border: 1px solid #0d0c14;
     background: #eff3f8;
     border-radius: 20px;
+    padding: 20px;
     &:active{
       background: #e7ebf0;
     }

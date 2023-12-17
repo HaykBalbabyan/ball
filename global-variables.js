@@ -1,7 +1,6 @@
 module.exports = {
-    site: 'http://ball.loc',
-    // files: 'http://ball.infinitycloud.ru'
-    files: 'http://ball.loc'
+    site: 'http://192.168.18.119',
+    files: 'https://ball.infinitycloud.ru'
 };
 
 

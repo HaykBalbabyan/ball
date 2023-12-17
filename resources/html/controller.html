@@ -6,24 +6,33 @@
     <div class="inline">
         <div class="left-side side">
             <div class="buttons column">
-                <button class="forward controll-button">
+                <button class="forward control-button" data-direction="forward">
                     <icon name="arrow-up" type="regular" width="35" height="35"></icon>
                 </button>
-                <button class="backward controll-button">
+                <button class="backward control-button" data-direction="backward">
                     <icon name="arrow-down" type="regular" width="35" height="35"></icon>
                 </button>
             </div>
         </div>
+
+        <div class="center">
+            <div class="buttons">
+                <button class="brake control-button" data-is-brake><icon name="brake-warning" type="solid" width="35" height="35"></icon></button>
+            </div>
+        </div>
+
         <div class="right-side side">
             <div class="buttons row">
-                <button class="left controll-button">
+                <button class="left control-button" data-direction="left">
                     <icon name="arrow-left" type="regular" width="35" height="35"></icon>
                 </button>
-                <button class="right controll-button">
+                <button class="right control-button" data-direction="right">
                     <icon name="arrow-right" type="regular" width="35" height="35"></icon>
                 </button>
             </div>
         </div>
     </div>
-    <input type="range" class="speed" value="10" min="0" max="20" step="0.5">
+    <div class="temp">
+        Direction: none
+    </div>
 </section>

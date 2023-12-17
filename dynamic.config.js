@@ -1,7 +1,6 @@
 export const config = {
     templates: {
-        // urlpath : 'http://ball.infinitycloud.ru/public',
-        urlpath : 'http://ball.loc/public',
+        urlpath : 'https://ball.infinitycloud.ru/public',
         dirpath : './public'
     },
 };

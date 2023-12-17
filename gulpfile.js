@@ -9,6 +9,7 @@ const cleanCSS = require('gulp-clean-css');
 const fileInclude = require('gulp-file-include');
 const del = require('del');
 const terser = require('gulp-terser');
+const rename = require('gulp-rename');
 const fs = require('fs');
 
 const webpack = require('webpack-stream');
@@ -121,6 +122,24 @@ function watch() {
     gulp.watch('routes.json', js);
 }
 
+function esp() {
+    return gulp
+        .src('index.php')
+        .pipe(htmlmin({
+            collapseWhitespace: true,
+            removeComments: true,
+            minifyJS: true,
+            minifyCSS: true,
+        }))
+        .on('error', function (err) {
+            console.error('Error in minifyHTML task:', err.toString());
+            this.emit('end');
+        })
+        .pipe(replace(/"/g, '\\"')) // Use regular expression and escape the double quotes properly
+        .pipe(rename('./ino/esp-content.html'))
+        .pipe(gulp.dest('./'));
+}
+
 function __default(done){
     env = 'development';
     done();
@@ -147,6 +166,8 @@ exports.css = css;
 exports.js = js;
 exports.watch = watch;
 exports.clean = clean;
+
+exports.esp = esp;
 
 exports.build = gulp.series(
     __build,

@@ -42,7 +42,7 @@ export function getCookie(name) {
 
 export const router = new Router();
 
-export function event(event,selector,callback){
+export function event(event,selector,callback,options = {}){
     if (
         typeof callback !== 'function' ||
         typeof event !== 'string' ||
@@ -63,13 +63,12 @@ export function event(event,selector,callback){
 
     if (Array.isArray(event)){
         for (const evt of event){
-            console.log(evt);
-            handler.removeEventListener(evt,eventListener);
-            handler.addEventListener(evt,eventListener);
+            handler.removeEventListener(evt,eventListener,options);
+            handler.addEventListener(evt,eventListener,options);
         }
     } else {
-        handler.removeEventListener(event, eventListener);
-        handler.addEventListener(event, eventListener);
+        handler.removeEventListener(event, eventListener,options);
+        handler.addEventListener(event, eventListener,options);
     }
 
 
