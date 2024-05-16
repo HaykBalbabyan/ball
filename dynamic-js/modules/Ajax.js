@@ -39,7 +39,7 @@ export default class Ajax{
                             const nestedParams = this.#objToUrl(item, `${paramKey}[${index}]`);
                             params.push(nestedParams);
                         } else {
-                            params.push(`${paramKey}[]=${encodeURIComponent(item)}`);
+                            params.push(`${paramKey}[${index}]=${encodeURIComponent(item)}`);
                         }
                     });
                 } else {
