@@ -1,4 +1,4 @@
-import {event,router,element,elements,ajax} from "../../../dynamic-js/Dynamic";
+import {event,element,elements,ajax} from "../../../dynamic-js/Dynamic";
 import {cssVar} from "./functions";
 
 export default class Events {
@@ -10,7 +10,7 @@ export default class Events {
 
     #addEvents(){
 
-        router.events.onLoad = (route) => {
+        document.addEventListener('DOMContentLoaded', (route) => {
             setTimeout(()=>{
                 const loader = document.querySelector('#page-loader-wrapper');
 
@@ -38,21 +38,7 @@ export default class Events {
                     }
                 },400);
             },500);
-        };
-
-        router.events.onChange = (data,referer) => {
-            setTimeout(()=>{
-                const links = elements('#header .menu a');
-
-                if (links){
-                    for (const link of links){
-                        if (router.parseUrl(window.location.origin + data.route.path,link.href).match){
-                            link.classList.add('active')
-                        }
-                    }
-                }
-            },50)
-        };
+        });
 
 
         event('scroll,resize,orientationChange',window,(e) => {
